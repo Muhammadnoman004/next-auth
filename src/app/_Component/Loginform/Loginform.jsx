@@ -1,13 +1,53 @@
-"use client"
 import React, { useState } from 'react';
+import { signIn } from 'next-auth/react'
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Flex, Form, Input } from 'antd';
+import { useRouter } from 'next/navigation';
 
 const Loginform = () => {
-    const [loading, setLoading] = useState(false)
-    const onFinish = (values) => {
-        console.log('Received values of form: ', values);
+
+    const router = useRouter()
+    const [loadings, setLoadings] = useState([]);
+
+    const enterLoading = (index) => {
+        setLoadings((prevLoadings) => {
+            const newLoadings = [...prevLoadings];
+            newLoadings[index] = true;
+            return newLoadings;
+        });
+        setTimeout(() => {
+            setLoadings((prevLoadings) => {
+                const newLoadings = [...prevLoadings];
+                newLoadings[index] = false;
+                return newLoadings;
+            });
+        }, 3000);
     };
+
+    const handleSubmit = async (values) => {
+        try {
+            console.log('Received values of form: ', values);
+            const response = await signIn('credentials', {
+                username: values.username,
+                password: values.password,
+                redirect: false
+
+            })
+            if (response.status === 200) {
+                alert("login Successfuly")
+                router.replace('/Home')
+            }
+            else {
+
+                alert("Invalid credentials!")
+            }
+
+        } catch (error) {
+            console.error(error);
+
+        }
+    };
+
     return (
         <>
             <Flex justify='center' gap="middle" align='center' className='h-screen' vertical>
@@ -17,7 +57,7 @@ const Loginform = () => {
                     initialValues={{
                         remember: true,
                     }}
-                    onFinish={onFinish}
+                    onFinish={handleSubmit}
                 >
                     <Form.Item
                         name="username"
@@ -56,9 +96,9 @@ const Loginform = () => {
                     </Form.Item>
 
                     <Form.Item>
-                        <Button type="primary" htmlType="submit" className="login-form-button"
-                            onClick={() => setLoading(prev => !prev)}
-                            loading={loading}
+                        <Button type="primary" htmlType="submit" className="login-form-button" block
+                            onClick={() => enterLoading(1)}
+                            loading={loadings[1]}
                         >
                             Log in
                         </Button>
