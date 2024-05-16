@@ -50,7 +50,8 @@ const Loginform = () => {
 
     return (
         <>
-            <Flex justify='center' gap="middle" align='center' className='h-screen' vertical>
+            <Flex justify='center' gap="middle" align='center' className='h-screen' vertical style={{ backgroundColor: "gainsboro" }}>
+                <h1 style={{ fontSize: "30px", fontWeight: "bold" }}>Login</h1>
                 <Form
                     name="normal_login"
                     className="login-form"
